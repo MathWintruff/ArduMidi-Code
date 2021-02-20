@@ -2,8 +2,15 @@
 #include <MIDI.h> // by Francois Best
 MIDI_CREATE_DEFAULT_INSTANCE();
 
+byte midiChanel_POTs = 1;
+byte midiChanel_Keypad = 1;
+boolean retainMode = false;
+const int btnChanelSwitch[2][2] = {{9,10},{11,12}}, potsChannelSwitch = 8, retainModeSwitch = 13;
+
 #include <Potentiometers.h>
 #include <MatrixKeypad.h>
+#include <Switchs.h>
+
 
 Potentiometer pots[]{A0, A1, A2, A3, A4, A5};
 int potsQTD = 6;
@@ -11,9 +18,6 @@ int potsQTD = 6;
 int keypadRowPins[] = {7, 6};
 int keypadCollumPins[] = {2, 3 ,4 ,5};
 MatrixKeypad keypad(2, keypadRowPins, 4, keypadCollumPins);
-
-byte midiChanel_POTs = 1;
-byte midiChanel_Keypad = 1;
 
 void setup() {
   // 31250 for MIDI class compliant | 115200 for Hairless MIDI
@@ -23,7 +27,10 @@ void setup() {
 }
 
 void loop() {
+    ChannelsSwitchsInit();
+    ChannelRead();
     CheckPotsForMIDI(pots, potsQTD, midiChanel_POTs);
-    CheckKeypadForMIDI(keypad, midiChanel_Keypad);
+    CheckKeypadForMIDI(keypad, midiChanel_Keypad, retainMode);
+    delay(1);
 
 }

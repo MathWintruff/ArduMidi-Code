@@ -13,8 +13,7 @@ class MatrixKeypad {
         int _rowPins[100];
         int _qtdColluns;
         int _collunPins[100];
-        ReadingResult _currentBtnReading;
-        ReadingResult _previousBtnReading;       
+               
 
     public:
         MatrixKeypad(int _qtdRows, int _rowPins[], int _qtdColluns, int _collunPins[]);
@@ -50,6 +49,8 @@ class MatrixKeypad {
         
 
         ReadingResult MatrixKeypad::ReadKeypad(){
+            static ReadingResult _currentBtnReading;
+            static ReadingResult _previousBtnReading;
             _currentBtnReading.isBeingClicked = false;
             for(int row = 0; row < _qtdRows; row++){
                 digitalWrite(_rowPins[row], LOW);
@@ -66,11 +67,14 @@ class MatrixKeypad {
             return _currentBtnReading;
         }
 
-void CheckKeypadForMIDI(MatrixKeypad keypad, byte channel){
+void CheckKeypadForMIDI(MatrixKeypad keypad, byte channel, boolean retainMode){
     byte noteVelocity;
     ReadingResult keypadReading = keypad.ReadKeypad();
     if(keypadReading.wasClicked){
         keypadReading.isBeingClicked ? noteVelocity = 127 : noteVelocity = 0;
+        if(retainMode == true || noteVelocity == 127){ 
         MIDI.sendNoteOn(keypadReading.btnNumber, noteVelocity, channel);
+        delay(200);
+        }
     }
 }
