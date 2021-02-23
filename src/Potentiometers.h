@@ -18,18 +18,13 @@ Potentiometer::Potentiometer(const int Pin){
 }
 
 boolean Potentiometer::HaveChanged(){
-    if(abs(analogRead(_Pin) - _lastReading) > _trashHold){
-        return true;
-    }else{
-        return false;
-    }
+    return (abs(analogRead(_Pin) - _lastReading) > _trashHold) ? true : false;
 }
 
 int Potentiometer::CurrentValue(){
     int reading = analogRead(_Pin);
     _lastReading = reading;
-    reading >= 1018 ? reading = 1023 : reading <= 6 ? reading = 0 : reading = reading;
-    return reading; 
+    return reading >= 1018 ? 1023 : reading <= 6 ? 0 : reading;
 }
 
 void CheckPotsForMIDI(Potentiometer pots[], int qtdPots, byte channel){
